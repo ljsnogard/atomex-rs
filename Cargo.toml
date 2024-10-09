@@ -3,5 +3,13 @@ name = "atomex"
 version = "0.1.0"
 edition = "2021"
 
+authors = ["lino <lino_snsalias@outlook.com>"]
+description = "Atomics extensions in Rust"
+homepage = "https://github.com/ljsnogard/atomex-rs"
+keywords = ["atomic", "traits"]
+categories = ["algorithms", "no-std"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+
 [dependencies]
 funty = { version = "3.0.0-rc2", default-features = false }
