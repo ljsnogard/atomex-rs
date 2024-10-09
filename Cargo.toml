@@ -1,0 +1,7 @@
+﻿[package]
+name = "atomex"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+funty = { version = "3.0.0-rc2", default-features = false }
