@@ -5,7 +5,7 @@ edition = "2021"
 
 authors = ["lino <lino_snsalias@outlook.com>"]
 description = "Atomics extensions in Rust"
-homepage = "https://github.com/ljsnogard/atomex-rs"
+repository = "https://github.com/ljsnogard/atomex-rs"
 keywords = ["atomic", "traits"]
 categories = ["algorithms", "no-std"]
 license = "MIT/Apache-2.0"
