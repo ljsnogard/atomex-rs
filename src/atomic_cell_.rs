@@ -10,12 +10,26 @@ pub trait TrAtomicCell {
     fn into_inner(self) -> Self::Value;
 
     /// Loads a value from the cell.
+    /// 
+    /// `load` takes an [`Ordering`] argument which describes the memory ordering
+    /// of this operation. Possible values are [`SeqCst`], [`Acquire`] and [`Relaxed`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if `order` is [`Release`] or [`AcqRel`].
     fn load(
         &self,
         order: Ordering,
     ) -> Self::Value;
 
     /// Stores a value into the cell.
+    /// 
+    /// `store` takes an [`Ordering`] argument which describes the memory ordering
+    /// of this operation. Possible values are [`SeqCst`], [`Release`] and [`Relaxed`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if `order` is [`Acquire`] or [`AcqRel`].
     fn store(
         &self,
         val: Self::Value,
@@ -23,6 +37,14 @@ pub trait TrAtomicCell {
     );
 
     /// Stores a value into the cell, returning the previous value.
+    /// 
+    /// `swap` takes an [`Ordering`] argument which describes the memory ordering
+    /// of this operation. All ordering modes are possible. Note that using
+    /// [`Acquire`] makes the store part of this operation [`Relaxed`], and
+    /// using [`Release`] makes the load part [`Relaxed`].
+    ///
+    /// **Note:** This method is only available on platforms that support atomic
+    /// operations on pointers.
     fn swap(
         &self,
         val: Self::Value,
@@ -153,15 +175,15 @@ impl TrAtomicData for u64 {
     type AtomicCell = AtomicU64;
 }
 
-// #[cfg(target_has_atomic = "128")]
-// impl TrAtomicData for i128 {
-//     type AtomicCell = AtomicI128;
-// }
+#[cfg(all(target_has_atomic = "128", feature = "support_u128_i128_atomics"))]
+impl TrAtomicData for i128 {
+    type AtomicCell = AtomicI128;
+}
 
-// #[cfg(target_has_atomic = "128")]
-// impl TrAtomicData for u128 {
-//     type AtomicCell = AtomicU128;
-// }
+#[cfg(all(target_has_atomic = "128", feature = "support_u128_i128_atomics"))]
+impl TrAtomicData for u128 {
+    type AtomicCell = AtomicU128;
+}
 
 impl TrAtomicData for isize {
     type AtomicCell = AtomicIsize;
@@ -367,8 +389,8 @@ impl_atomic!(AtomicI32: i32; bitwise, numops);
 #[cfg(target_has_atomic = "64")]
 impl_atomic!(AtomicI64: i64; bitwise, numops);
 
-// #[cfg(target_has_atomic = "128")]
-// impl_atomic!(AtomicI128: i128; bitwise, numops);
+#[cfg(all(target_has_atomic = "128", feature = "support_u128_i128_atomics"))]
+impl_atomic!(AtomicI128: i128; bitwise, numops);
 
 #[cfg(target_has_atomic = "8")]
 impl_atomic!(AtomicU8: u8; bitwise, numops);
@@ -382,5 +404,5 @@ impl_atomic!(AtomicU32: u32; bitwise, numops);
 #[cfg(target_has_atomic = "64")]
 impl_atomic!(AtomicU64: u64; bitwise, numops);
 
-// #[cfg(target_has_atomic = "128")]
-// impl_atomic!(AtomicU128: u128; bitwise, numops);
+#[cfg(all(target_has_atomic = "128", feature = "support_u128_i128_atomics"))]
+impl_atomic!(AtomicU128: u128; bitwise, numops);

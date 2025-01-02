@@ -2,6 +2,8 @@
 // in how we `use` items from `std` or `core`
 #![no_std]
 
+#![feature(integer_atomics)]
+
 // We always pull in `std` during tests, because it's just easier
 // to write tests when you can assume you're on a capable platform
 #[cfg(test)]
