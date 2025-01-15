@@ -1,7 +1,7 @@
 ﻿[package]
 name = "atomex"
 version = "0.1.1"
-edition = "2021"
+edition = "2024"
 
 authors = ["lino <lino_snsalias@outlook.com>"]
 description = "Atomics extensions in Rust"
@@ -13,7 +13,7 @@ readme = "README.md"
 
 [features]
 support_u128_i128_atomics = []
-default = ["support_u128_i128_atomics"]
+default = []
 
 [dependencies]
 funty = { version = "3.0.0-rc2", default-features = false }
