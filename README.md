@@ -1,5 +1,7 @@
 # atomex
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ljsnogard/atomex-rs)
+
 Some useful extensions around `Atomic*` in `core::sync::atomic`.
 
 This crate is mainly inspired by [atomic-traits](https://crates.io/crates/atomic-traits)
