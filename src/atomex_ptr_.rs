@@ -1,10 +1,11 @@
-﻿use core::{
+use core::{
     borrow::BorrowMut,
     fmt,
     marker::PhantomData,
     ptr::{self, NonNull},
     sync::atomic::AtomicPtr,
 };
+
 use crate::{CmpxchResult, StrictOrderings, TrAtomicFlags, TrCmpxchOrderings};
 
 /// A wrapper around the [`AtomicPtr`](core::sync::atomic::AtomicPtr).
@@ -12,7 +13,8 @@ use crate::{CmpxchResult, StrictOrderings, TrAtomicFlags, TrCmpxchOrderings};
 pub struct AtomexPtr<T, B = AtomicPtr<T>, O = StrictOrderings>(
     B,
     PhantomData<AtomicPtr<T>>,
-    PhantomData<O>)
+    PhantomData<O>,
+)
 where
     B: BorrowMut<AtomicPtr<T>>,
     O: TrCmpxchOrderings;
@@ -42,12 +44,9 @@ where
         current: *mut T,
         desired: *mut T,
     ) -> Result<*mut T, *mut T> {
-        self.0.borrow().compare_exchange_weak(
-            current,
-            desired,
-            O::SUCC_ORDERING,
-            O::FAIL_ORDERING,
-        )
+        self.0
+            .borrow()
+            .compare_exchange_weak(current, desired, O::SUCC_ORDERING, O::FAIL_ORDERING)
     }
 
     #[inline(always)]
@@ -57,12 +56,7 @@ where
         expect: impl FnMut(*mut T) -> bool,
         desire: impl FnMut(*mut T) -> *mut T,
     ) -> CmpxchResult<*mut T> {
-        TrAtomicFlags::try_once_compare_exchange_weak(
-            self,
-            current,
-            expect,
-            desire,
-        )
+        TrAtomicFlags::try_once_compare_exchange_weak(self, current, expect, desire)
     }
 
     #[inline(always)]
@@ -96,11 +90,8 @@ where
 
     /// Try to update the atomic pointer from non-null to null, after checking
     /// the the equality between the stored pointer and the argument pointer.
-    pub fn try_spin_compare_and_reset(
-        &self,
-        p: NonNull<T>,
-    ) -> Result<NonNull<T>, *mut T> {
-        let expect = |x: *mut T| { ptr::eq(x, p.as_ptr()) };
+    pub fn try_spin_compare_and_reset(&self, p: NonNull<T>) -> Result<NonNull<T>, *mut T> {
+        let expect = |x: *mut T| ptr::eq(x, p.as_ptr());
         let desire = |_| ptr::null_mut();
         let op_ptr_to_non_null = |x| unsafe { NonNull::new_unchecked(x) };
         let r: Result<_, _> = self
@@ -128,8 +119,7 @@ where
     }
 }
 
-impl<'a, T> From<&'a mut AtomicPtr<T>>
-for AtomexPtr<T, &'a mut AtomicPtr<T>, StrictOrderings> {
+impl<'a, T> From<&'a mut AtomicPtr<T>> for AtomexPtr<T, &'a mut AtomicPtr<T>, StrictOrderings> {
     fn from(value: &'a mut AtomicPtr<T>) -> Self {
         AtomexPtr::new(value)
     }

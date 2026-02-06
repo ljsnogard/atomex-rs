@@ -1,6 +1,6 @@
 ﻿[package]
 name = "atomex"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 
 authors = ["lino <lino_snsalias@outlook.com>"]
@@ -13,7 +13,7 @@ readme = "README.md"
 
 [features]
 support_u128_i128_atomics = []
-default = []
+default = ["support_u128_i128_atomics"]
 
 [dependencies]
 funty = { version = "3.0.0-rc2", default-features = false }
