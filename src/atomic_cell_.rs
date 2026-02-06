@@ -1,4 +1,4 @@
-﻿use core::{marker::PhantomData, sync::atomic::*};
+﻿use core::sync::atomic::*;
 use crate::fetch;
 
 pub trait TrAtomicCell {
@@ -86,25 +86,6 @@ pub trait TrAtomicData {
     type AtomicCell: TrAtomicCell<Value = Self>;
 }
 
-/// The trait for types implementing atomic bitwise operations
-pub trait Bitwise:
-    TrAtomicCell
-    + fetch::And<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Nand<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Or<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Xor<Value = <Self as TrAtomicCell>::Value>
-{}
-
-/// The trait for types implementing atomic numeric operations
-pub trait NumOps:
-    TrAtomicCell
-    + fetch::Add<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Sub<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Update<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Max<Value = <Self as TrAtomicCell>::Value>
-    + fetch::Min<Value = <Self as TrAtomicCell>::Value>
-{}
-
 /// An helper trait to define spinlock ordering used in atomic operation
 pub trait TrCmpxchOrderings: Unpin {
     const SUCC_ORDERING: Ordering;
@@ -132,8 +113,6 @@ impl TrCmpxchOrderings for LocksOrderings {
     const FAIL_ORDERING: Ordering = Ordering::Relaxed;
     const LOAD_ORDERING: Ordering = Ordering::Acquire;
 }
-
-pub type PhantomAtomicPtr<T> = PhantomData<AtomicPtr<T>>;
 
 #[cfg(target_has_atomic = "8")]
 impl TrAtomicData for i8 {
@@ -276,7 +255,7 @@ macro_rules! impl_atomic {
     };
 
     (__impl bitwise $atomic:ident : $primitive:ty) => {
-        impl Bitwise for $atomic {}
+        impl fetch::Bitwise for $atomic {}
 
         impl $crate::fetch::And for $atomic {
             type Value = $primitive;
@@ -316,7 +295,7 @@ macro_rules! impl_atomic {
     };
 
     (__impl numops $atomic:ident : $primitive:ty) => {
-        impl NumOps for $atomic {}
+        impl fetch::NumOps for $atomic {}
 
         impl $crate::fetch::Add for $atomic {
             type Value = $primitive;

@@ -14,13 +14,17 @@ mod atomic_cell_;
 mod atomic_count_;
 mod atomic_flags_;
 mod cmpxch_result_;
+
 pub mod fetch;
 
-pub use atomex_ptr_::*;
-pub use atomic_cell_::*;
-pub use atomic_count_::*;
-pub use atomic_flags_::*;
-pub use cmpxch_result_::*;
+pub use atomex_ptr_::{AtomexPtr, AtomexPtrMut, AtomexPtrOwned};
+pub use atomic_cell_::{
+    LocksOrderings, StrictOrderings,
+    TrAtomicCell, TrAtomicData, TrCmpxchOrderings,
+};
+pub use atomic_count_::{AtomicCount, AtomicCountMut, AtomicCountOwned};
+pub use atomic_flags_::{AtomicFlags, TrAtomicFlags};
+pub use cmpxch_result_::CmpxchResult;
 
 pub mod x_deps {
     pub use funty;

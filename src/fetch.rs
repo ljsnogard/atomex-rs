@@ -2,6 +2,8 @@
 //! value.
 use core::sync::atomic::Ordering;
 
+use crate::TrAtomicCell;
+
 /// Bitwise "and" with the current value.
 pub trait And {
     /// The underlying primitive value type
@@ -160,3 +162,22 @@ pub trait Min {
         order: Ordering,
     ) -> Self::Value;
 }
+
+/// The trait for types implementing atomic bitwise operations
+pub trait Bitwise:
+    TrAtomicCell
+    + And<Value = <Self as TrAtomicCell>::Value>
+    + Nand<Value = <Self as TrAtomicCell>::Value>
+    + Or<Value = <Self as TrAtomicCell>::Value>
+    + Xor<Value = <Self as TrAtomicCell>::Value>
+{}
+
+/// The trait for types implementing atomic numeric operations
+pub trait NumOps:
+    TrAtomicCell
+    + Add<Value = <Self as TrAtomicCell>::Value>
+    + Sub<Value = <Self as TrAtomicCell>::Value>
+    + Update<Value = <Self as TrAtomicCell>::Value>
+    + Max<Value = <Self as TrAtomicCell>::Value>
+    + Min<Value = <Self as TrAtomicCell>::Value>
+{}

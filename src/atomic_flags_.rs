@@ -6,7 +6,7 @@
 };
 
 use crate::{
-    CmpxchResult, PhantomAtomicPtr, StrictOrderings,
+    CmpxchResult, StrictOrderings, 
     TrAtomicCell, TrAtomicData, TrCmpxchOrderings,
 };
 
@@ -77,7 +77,7 @@ pub struct AtomicFlags<
     T,
     B = <T as TrAtomicData>::AtomicCell,
     O = StrictOrderings,
->(B, PhantomData<T>, PhantomAtomicPtr<O>)
+>(B, PhantomData<T>, PhantomData<O>)
 where
     T: TrAtomicData + Copy,
     <T as TrAtomicData>::AtomicCell: TrAtomicCell<Value = T>,

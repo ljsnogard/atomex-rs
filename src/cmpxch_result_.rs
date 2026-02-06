@@ -1,5 +1,4 @@
-﻿
-#[derive(Debug, Clone)]
+﻿#[derive(Debug, Clone)]
 pub enum CmpxchResult<T> {
     /// The compare_exchange successfully updated the value.
     Succ(T),
