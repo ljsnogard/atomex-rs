@@ -10,7 +10,7 @@ pub trait TrAtomicCell {
     fn into_inner(self) -> Self::Value;
 
     /// Loads a value from the cell.
-    /// 
+    ///
     /// `load` takes an [`Ordering`] argument which describes the memory ordering
     /// of this operation. Possible values are [`SeqCst`], [`Acquire`] and [`Relaxed`].
     ///
@@ -23,7 +23,7 @@ pub trait TrAtomicCell {
     ) -> Self::Value;
 
     /// Stores a value into the cell.
-    /// 
+    ///
     /// `store` takes an [`Ordering`] argument which describes the memory ordering
     /// of this operation. Possible values are [`SeqCst`], [`Release`] and [`Relaxed`].
     ///
@@ -37,7 +37,7 @@ pub trait TrAtomicCell {
     );
 
     /// Stores a value into the cell, returning the previous value.
-    /// 
+    ///
     /// `swap` takes an [`Ordering`] argument which describes the memory ordering
     /// of this operation. All ordering modes are possible. Note that using
     /// [`Acquire`] makes the store part of this operation [`Relaxed`], and
@@ -87,7 +87,7 @@ pub trait TrAtomicData {
 }
 
 /// An helper trait to define spinlock ordering used in atomic operation
-pub trait TrCmpxchOrderings: Unpin {
+pub trait TrCmpxchOrderings {
     const SUCC_ORDERING: Ordering;
     const FAIL_ORDERING: Ordering;
     const LOAD_ORDERING: Ordering;
@@ -327,7 +327,7 @@ macro_rules! impl_atomic {
             ) -> Result<Self::Value, Self::Value>
             where
                 F: FnMut(Self::Value) -> Option<Self::Value> {
-                Self::fetch_update(self, fetch_order, set_order, f)
+                Self::try_update(self, fetch_order, set_order, f)
             }
         }
 
